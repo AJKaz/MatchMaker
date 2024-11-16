@@ -1,7 +1,8 @@
 using UnityEngine;
 
 public class Wanderer : MonoBehaviour {
-    [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float moveSpeed = 0.5f;
+    [SerializeField] private float scatterSpeed = 5f;
     [SerializeField] private float turnSpeed = 2f;
     [SerializeField] private float changeDirectionTime = 2f;
 
@@ -22,6 +23,7 @@ public class Wanderer : MonoBehaviour {
     public SpriteRenderer spriteRenderer;
 
     private bool bWander = true;
+    private bool bScatter = false;
 
     void Start() {
         SetRandomDirection();
@@ -33,7 +35,12 @@ public class Wanderer : MonoBehaviour {
             return;
         }
 
-        AvoidWalls();
+        if (bScatter) {
+            AvoidPosition(Vector3.zero, 1000f);
+        }
+        else {
+            AvoidWalls();
+        }
 
         for (int i = 0; i < GameManager.Instance.wandererList.Count; i++) {
             float avoidanceDistance = GameManager.Instance.IsWandererSelected(GameManager.Instance.wandererList[i]) ? targetAvoidanceDistance : normalAvoidanceDistance;
@@ -44,8 +51,11 @@ public class Wanderer : MonoBehaviour {
 
         Vector3 newPosition = transform.position + (Vector3)(currentDirection * moveSpeed * Time.deltaTime);
 
-        newPosition.x = Mathf.Clamp(newPosition.x, areaOffset.x - areaSize.x / 2, areaOffset.x + areaSize.x / 2);
-        newPosition.y = Mathf.Clamp(newPosition.y, areaOffset.y - areaSize.y / 2, areaOffset.y + areaSize.y / 2);
+        if (!bScatter) {
+            newPosition.x = Mathf.Clamp(newPosition.x, areaOffset.x - areaSize.x / 2, areaOffset.x + areaSize.x / 2);
+            newPosition.y = Mathf.Clamp(newPosition.y, areaOffset.y - areaSize.y / 2, areaOffset.y + areaSize.y / 2);
+        }
+       
         transform.position = newPosition;
 
         timer += Time.deltaTime;
@@ -82,6 +92,11 @@ public class Wanderer : MonoBehaviour {
         if (avoidanceForce != Vector2.zero) {
             targetDirection = (targetDirection + avoidanceForce).normalized;
         }
+    }
+
+    public void Scatter() {
+        bScatter = true;
+        moveSpeed = scatterSpeed;
     }
 
     private void AvoidPosition(Vector3 targetPosition, float avoidanceDistance) {

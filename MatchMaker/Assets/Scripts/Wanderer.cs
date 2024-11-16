@@ -35,9 +35,9 @@ public class Wanderer : MonoBehaviour {
 
         AvoidWalls();
 
-        for (int i = 0; i < GameManager.Instance.wanderers.Count; i++) {
-            float avoidanceDistance = GameManager.Instance.IsWandererSelected(GameManager.Instance.wanderers[i]) ? targetAvoidanceDistance : normalAvoidanceDistance;
-            AvoidPosition(GameManager.Instance.wanderers[i].transform.position, avoidanceDistance);
+        for (int i = 0; i < GameManager.Instance.wandererList.Count; i++) {
+            float avoidanceDistance = GameManager.Instance.IsWandererSelected(GameManager.Instance.wandererList[i]) ? targetAvoidanceDistance : normalAvoidanceDistance;
+            AvoidPosition(GameManager.Instance.wandererList[i].transform.position, avoidanceDistance);
         }
 
         currentDirection = Vector2.Lerp(currentDirection, targetDirection, Time.deltaTime * turnSpeed).normalized;

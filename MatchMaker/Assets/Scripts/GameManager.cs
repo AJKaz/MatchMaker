@@ -14,7 +14,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private List<Sprite> sprites = new List<Sprite>();
 
-    public List<Wanderer> wanderers = new List<Wanderer>();
+    [SerializeField] private Transform Wanderers;
+
+    public List<Wanderer> wandererList = new List<Wanderer>();
     public Wanderer match1;
     public Wanderer match2;
 
@@ -41,23 +43,23 @@ public class GameManager : MonoBehaviour
             float x = Random.Range(-wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x, wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x);
             float y = Random.Range(-wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y, wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y);
            
-            Wanderer newWanderer = Instantiate(wandererPrefab, new Vector2(x, y), Quaternion.identity);
+            Wanderer newWanderer = Instantiate(wandererPrefab, new Vector2(x, y), Quaternion.identity, Wanderers);
             newWanderer.spriteRenderer.sprite = sprite;
 
-            wanderers.Add(newWanderer);
+            wandererList.Add(newWanderer);
         }
     }
 
     private void CreateMatch()
     {
-        int randomIndex = Random.Range(0, wanderers.Count);
-        match1Sprite.sprite = wanderers[randomIndex].spriteRenderer.sprite;
-        match1 = wanderers[randomIndex];
+        int randomIndex = Random.Range(0, wandererList.Count);
+        match1Sprite.sprite = wandererList[randomIndex].spriteRenderer.sprite;
+        match1 = wandererList[randomIndex];
 
         // Get a random index
-        randomIndex = Random.Range(0, wanderers.Count);
-        match2Sprite.sprite = wanderers[randomIndex].spriteRenderer.sprite;
-        match2 = wanderers[randomIndex];
+        randomIndex = Random.Range(0, wandererList.Count);
+        match2Sprite.sprite = wandererList[randomIndex].spriteRenderer.sprite;
+        match2 = wandererList[randomIndex];
     }
 
     private void Update() {

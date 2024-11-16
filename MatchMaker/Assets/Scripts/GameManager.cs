@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 
 public class GameManager : MonoBehaviour
@@ -21,6 +22,9 @@ public class GameManager : MonoBehaviour
     public Image match2Sprite;
 
     private List<Wanderer> selectedWanderers = new List<Wanderer>();
+
+    public TextMeshProUGUI timerText;
+    public float timer;
 
     private void Start() {
         if (Instance == null) Instance = this;

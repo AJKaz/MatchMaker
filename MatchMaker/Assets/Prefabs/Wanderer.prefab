@@ -135,7 +135,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd53e54fd70e0f34cab4c9fb76c2d4b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0.5
+  moveSpeed: 0.4
+  scatterSpeed: 3.5
   turnSpeed: 2
   changeDirectionTime: 2
   areaSize: {x: 17.5, y: 9.5}

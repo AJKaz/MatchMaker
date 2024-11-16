@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -34,6 +34,10 @@ public class GameManager : MonoBehaviour
     public MenuManager menuManager;
 
     private Animator animator;
+
+    private bool bCanClick = true;
+
+    [SerializeField] private float spamPreventionTime = 1f;
 
     private void Start() {
         if (Instance == null) Instance = this;
@@ -75,6 +79,9 @@ public class GameManager : MonoBehaviour
     }
 
     private void Update() {
+        // REMOVE THIS
+        if (Input.GetKeyDown(KeyCode.G)) ForceWin();
+
         if (Input.GetMouseButtonDown(0)) {
             HandleClick();
         }
@@ -94,6 +101,8 @@ public class GameManager : MonoBehaviour
     }
 
     private void HandleClick() {
+        if (!bCanClick) return;
+
         // raycast from mouse to wanderer
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
@@ -109,18 +118,11 @@ public class GameManager : MonoBehaviour
 
     private void WandererClicked(Wanderer wanderer) {
         if (IsWandererSelected(wanderer)) {
-            // Deselect wanderer
-
-            wanderer.SetMovement(true);
-            selectedWanderers.Remove(wanderer);
-            wanderer.GetComponent<Animator>().SetBool("Selected", false);
+            DeselectWanderer(wanderer);
         }
         else {
-            // Select wanderer
-            selectedWanderers.Add(wanderer);
-
-            wanderer.SetMovement(false);
-            wanderer.GetComponent<Animator>().SetBool("Selected", true);
+            if (selectedWanderers.Count == 2) return;
+            SelectWanderer(wanderer);
         }
 
         // Check Win Condition
@@ -128,18 +130,64 @@ public class GameManager : MonoBehaviour
 
     }
 
+    private void DeselectWanderer(Wanderer wanderer) {
+        wanderer.SetMovement(true);
+        selectedWanderers.Remove(wanderer);
+        wanderer.GetComponent<Animator>().SetBool("Selected", false);
+    }
+
+    private void SelectWanderer(Wanderer wanderer) {
+        selectedWanderers.Add(wanderer);
+
+        wanderer.SetMovement(false);
+        wanderer.GetComponent<Animator>().SetBool("Selected", true);
+    }
+
     private void CheckWin() {
         if (selectedWanderers.Contains(match1) && selectedWanderers.Contains(match2)) {
+            bCanClick = false;
+            
             Debug.Log("WIN");
+            foreach(Wanderer wanderer in wandererList) {
+                if (wanderer == match1 || wanderer == match2) {
+                    // go to center
+                }
+                else {
+                    wanderer.Scatter();
+                }
+            }
         }
         else {
-            Debug.Log("YOU SUCK DUMBASS");
+            StartCoroutine(WrongWanderersSelectedCoroutine());
         }
     }
 
+    IEnumerator WrongWanderersSelectedCoroutine() {
+        bCanClick = false;
+        
+        yield return new WaitForSeconds(spamPreventionTime);
 
-    // TODO: Finish this
+        for (int i = selectedWanderers.Count - 1; i >= 0; i--) { 
+            Wanderer wanderer = selectedWanderers[i];
+
+            if (wanderer == match1 || wanderer == match2) continue;
+
+            DeselectWanderer(wanderer);
+        }
+
+        bCanClick = true;
+    
+    }
+
     public bool IsWandererSelected(Wanderer wanderer) {
        return selectedWanderers.Contains(wanderer);
     }
+
+    private void ForceWin() {
+        selectedWanderers.Clear();
+        SelectWanderer(match1);
+        SelectWanderer(match2);
+        CheckWin();
+    }
+
 }

@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI timerText;
     public float timer = 60.0f;
     public float currentTime;
+    public bool timerOn = true;
 
     public MenuManager menuManager;
 
@@ -72,7 +73,7 @@ public class GameManager : MonoBehaviour
             HandleClick();
         }
 
-        if (currentTime > 0)
+        if (timerOn && currentTime > 0)
         {
             currentTime -= Time.deltaTime;
             timerText.text = currentTime.ToString("F1");

@@ -1293,7 +1293,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 38e75f572db7bc74c82c0e1faba8554f, type: 3}
   - {fileID: 21300000, guid: 5dad8b6d2ec9607469457af04abed58c, type: 3}
   - {fileID: 21300000, guid: 385dad8e58e98aa43bbc01df85b250fa, type: 3}
-  wanderers: []
+  Wanderers: {fileID: 0}
+  wandererList: []
   match1: {fileID: 0}
   match2: {fileID: 0}
   match1Sprite: {fileID: 1315443303}
@@ -1301,6 +1302,7 @@ MonoBehaviour:
   timerText: {fileID: 1954731833}
   timer: 60
   currentTime: 0
+  timerOn: 1
   menuManager: {fileID: 1734976342}
 --- !u!1 &1762063800
 GameObject:

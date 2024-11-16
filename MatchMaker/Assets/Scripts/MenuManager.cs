@@ -20,13 +20,13 @@ public class MenuManager : MonoBehaviour
     public void PauseGame()
     {
         pauseObj.SetActive(true);
-        gameUIObj.SetActive(true);
+        gameUIObj.SetActive(false);
     }
 
     public void UnpauseGame()
     {
         pauseObj.SetActive(false);
-        gameUIObj.SetActive(false);
+        gameUIObj.SetActive(true);
     }
 
     public void WinMenu()

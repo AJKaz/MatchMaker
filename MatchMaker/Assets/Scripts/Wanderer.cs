@@ -12,7 +12,8 @@ public class Wanderer : MonoBehaviour {
     [SerializeField] private float wallAvoidanceStrength = 1f;
     [SerializeField] private float targetAvoidanceStrength = 0.5f;
 
-    [SerializeField] private float targetAvoidanceDistance = 3f;
+    [SerializeField] private float normalAvoidanceDistance = 0.5f;
+    [SerializeField] private float targetAvoidanceDistance = 2f;
 
     private Vector2 currentDirection;
     private Vector2 targetDirection;
@@ -21,6 +22,7 @@ public class Wanderer : MonoBehaviour {
     // TEMP
     public Wanderer wandererToAvoid;
 
+    public bool bWander = true;
 
     void Start() {
         SetRandomDirection();
@@ -28,10 +30,15 @@ public class Wanderer : MonoBehaviour {
     }
 
     void Update() {
+        if (!bWander) {
+            return;
+        }
+
         AvoidWalls();
 
-        if (wandererToAvoid != null) {
-            AvoidTarget(wandererToAvoid.transform.position);
+        for (int i = 0; i < GameManager.Instance.wanderers.Count; i++) {
+            float avoidanceDistance = GameManager.Instance.IsIndexSelected(i) ? targetAvoidanceDistance : normalAvoidanceDistance;
+            AvoidPosition(GameManager.Instance.wanderers[i].transform.position, avoidanceDistance);
         }
 
         currentDirection = Vector2.Lerp(currentDirection, targetDirection, Time.deltaTime * turnSpeed).normalized;
@@ -78,13 +85,13 @@ public class Wanderer : MonoBehaviour {
         }
     }
 
-    private void AvoidTarget(Vector3 targetPosition) {
+    private void AvoidPosition(Vector3 targetPosition, float avoidanceDistance) {
         Vector3 directionAwayFromTarget = transform.position - targetPosition;
 
         float distanceToTarget = directionAwayFromTarget.magnitude;
 
-        if (distanceToTarget < targetAvoidanceDistance) {
-            float avoidanceFactor = Mathf.Lerp(0f, targetAvoidanceStrength, 1f - (distanceToTarget / targetAvoidanceDistance));
+        if (distanceToTarget < avoidanceDistance) {
+            float avoidanceFactor = Mathf.Lerp(0f, targetAvoidanceStrength, 1f - (distanceToTarget / avoidanceDistance));
             targetDirection += new Vector2(directionAwayFromTarget.x, directionAwayFromTarget.y).normalized * avoidanceFactor;
         }
     }

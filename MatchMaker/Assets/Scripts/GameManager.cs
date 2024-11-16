@@ -14,8 +14,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private List<Sprite> sprites = new List<Sprite>();
 
-    [SerializeField] private Transform Wanderers;
-
     public List<Wanderer> wandererList = new List<Wanderer>();
     public Wanderer match1;
     public Wanderer match2;
@@ -49,7 +47,7 @@ public class GameManager : MonoBehaviour
             float x = Random.Range(-wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x, wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x);
             float y = Random.Range(-wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y, wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y);
            
-            Wanderer newWanderer = Instantiate(wandererPrefab, new Vector2(x, y), Quaternion.identity, Wanderers);
+            Wanderer newWanderer = Instantiate(wandererPrefab, new Vector2(x, y), Quaternion.identity, gameObject.transform);
             newWanderer.spriteRenderer.sprite = sprite;
 
             wandererList.Add(newWanderer);

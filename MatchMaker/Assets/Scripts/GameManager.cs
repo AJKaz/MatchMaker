@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class GameManager : MonoBehaviour
@@ -12,12 +13,21 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private List<Sprite> sprites = new List<Sprite>();
 
-    [SerializeField] private List<Wanderer> wanderers = new List<Wanderer>();
+    public List<Wanderer> wanderers = new List<Wanderer>();
+    public Wanderer match1;
+    public Wanderer match2;
+
+    public Image match1Sprite;
+    public Image match2Sprite;
 
     private void Start() {
         if (Instance == null) Instance = this;
 
-        if (bCreateWanderers) CreateWanderers();
+        if (bCreateWanderers)
+        {
+            CreateWanderers();
+            CreateMatch();
+        }
     }
 
     private void CreateWanderers() {
@@ -31,5 +41,17 @@ public class GameManager : MonoBehaviour
 
             wanderers.Add(newWanderer);
         }
+    }
+
+    private void CreateMatch()
+    {
+        int randomIndex = Random.Range(0, wanderers.Count);
+        match1Sprite.sprite = wanderers[randomIndex].GetComponentInChildren<SpriteRenderer>().sprite;
+        match1 = wanderers[randomIndex];
+
+        // Get a random index
+        randomIndex = Random.Range(0, wanderers.Count);
+        match2Sprite.sprite = wanderers[randomIndex].GetComponentInChildren<SpriteRenderer>().sprite;
+        match2 = wanderers[randomIndex];
     }
 }

@@ -462,7 +462,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -205270267638800340, guid: 984deaf582a0ff942863693df85c1ac5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 984deaf582a0ff942863693df85c1ac5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -832,11 +832,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1761890124}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c6f1f64410a8e8498e84771ba8a5ce1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bCreateWanderers: 1
   wandererPrefab: {fileID: 3466069845536959921, guid: 6c1cab6b4f06bc945be5d9029bcf0b86, type: 3}
   sprites:
   - {fileID: 21300000, guid: 9f227b7dd71cd7249af77a7780ac9339, type: 3}
@@ -960,7 +961,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5dad8b6d2ec9607469457af04abed58c, type: 3}
   - {fileID: 21300000, guid: 385dad8e58e98aa43bbc01df85b250fa, type: 3}
   wanderers: []
-  areaSize: {x: 10, y: 10}
 --- !u!1 &1762063800
 GameObject:
   m_ObjectHideFlags: 0

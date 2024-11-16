@@ -38,6 +38,10 @@ public class GameManager : MonoBehaviour
     private bool bCanClick = true;
 
     [SerializeField] private float spamPreventionTime = 1f;
+    [SerializeField] private Transform match1EndPosition;
+    [SerializeField] private Transform match2EndPosition;
+
+    private bool bMatchesFound = false;
 
     private void Start() {
         if (Instance == null) Instance = this;
@@ -79,6 +83,15 @@ public class GameManager : MonoBehaviour
     }
 
     private void Update() {
+        if (bMatchesFound) {
+            if (match1.bAtTarget && match2.bAtTarget) {
+                // TODO: Both r now in center, play anim
+                Debug.Log("BOTH AT CENTER");
+            }
+
+            return;
+        }
+
         // REMOVE THIS
         if (Input.GetKeyDown(KeyCode.G)) ForceWin();
 
@@ -145,11 +158,16 @@ public class GameManager : MonoBehaviour
 
     private void CheckWin() {
         if (selectedWanderers.Contains(match1) && selectedWanderers.Contains(match2)) {
+            // Game Won
+            bMatchesFound = true;
             bCanClick = false;
             
             foreach(Wanderer wanderer in wandererList) {
-                if (wanderer == match1 || wanderer == match2) {
-                    // TODO: go to center
+                if (wanderer == match1) {
+                    wanderer.SetGoToPosition(match1EndPosition.transform.position);
+                }
+                else if (wanderer == match2) {
+                    wanderer.SetGoToPosition(match2EndPosition.transform.position);
                 }
                 else {
                     wanderer.Scatter();

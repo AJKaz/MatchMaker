@@ -3,8 +3,11 @@ using UnityEngine;
 public class Wanderer : MonoBehaviour {
     [SerializeField] private float moveSpeed = 0.5f;
     [SerializeField] private float scatterSpeed = 5f;
+    [SerializeField] private float matingSpeed = 2.5f;
     [SerializeField] private float turnSpeed = 2f;
     [SerializeField] private float changeDirectionTime = 2f;
+    [SerializeField] private float stoppingDistance = 1f;
+
 
     public Vector2 areaSize = new Vector2(15f, 8f);
     public Vector2 areaOffset = Vector2.zero;
@@ -25,12 +28,21 @@ public class Wanderer : MonoBehaviour {
     private bool bWander = true;
     private bool bScatter = false;
 
+    private Vector3 targetDestination;
+    private bool bGoToTargetDestination = false;
+    public bool bAtTarget = false;
+
     void Start() {
         SetRandomDirection();
         currentDirection = targetDirection;
     }
 
     void Update() {
+        if (bGoToTargetDestination) {
+            PathToTarget();
+            return;
+        }
+
         if (!bWander) {
             return;
         }
@@ -63,6 +75,27 @@ public class Wanderer : MonoBehaviour {
             SetRandomDirection();
             timer = 0f;
         }
+    }
+
+    public void SetGoToPosition(Vector3 position) {
+        bGoToTargetDestination = true;
+        targetDestination = position;
+        moveSpeed = matingSpeed;
+    }
+
+    private void PathToTarget() {
+        Vector3 direction = targetDestination - transform.position;
+        float distance = direction.magnitude;
+
+        if (distance < stoppingDistance) {
+            transform.position = targetDestination;
+            bAtTarget = true;
+            return;
+        }
+
+        direction = direction.normalized;        
+        Vector3 newPosition = transform.position + direction * moveSpeed * Time.deltaTime;
+        transform.position = newPosition;
     }
 
     private void SetRandomDirection() {

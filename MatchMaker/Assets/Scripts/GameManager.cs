@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     public Image match1Sprite;
     public Image match2Sprite;
 
+    private Wanderer test;
+
     private void Start() {
         if (Instance == null) Instance = this;
 
@@ -31,8 +33,12 @@ public class GameManager : MonoBehaviour
     }
 
     private void CreateWanderers() {
+        int i = 0;
         foreach (Sprite sprite in sprites) {
-            Wanderer newWanderer = Instantiate(wandererPrefab, Vector3.zero, Quaternion.identity);
+            float x = Random.Range(-wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x, wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x);
+            float y = Random.Range(-wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y, wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y);
+           
+            Wanderer newWanderer = Instantiate(wandererPrefab, new Vector2(x, y), Quaternion.identity);
 
             SpriteRenderer renderer = newWanderer.GetComponentInChildren<SpriteRenderer>();
             if (renderer != null) {
@@ -40,6 +46,15 @@ public class GameManager : MonoBehaviour
             }
 
             wanderers.Add(newWanderer);
+            
+            // TEMP
+            if (i == 0) {
+                test = newWanderer;
+                i++;
+                continue;
+            }
+            newWanderer.wandererToAvoid = test;
+            i++;
         }
     }
 

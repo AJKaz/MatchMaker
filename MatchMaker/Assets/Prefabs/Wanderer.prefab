@@ -52,6 +52,9 @@ MonoBehaviour:
   areaOffset: {x: 0, y: -0.88}
   predictionDistance: 2
   wallAvoidanceStrength: 3
+  targetAvoidanceStrength: 0.5
+  targetWanderer: {fileID: 0}
+  targetAvoidanceDistance: 2
 --- !u!1 &4779801077341372600
 GameObject:
   m_ObjectHideFlags: 0

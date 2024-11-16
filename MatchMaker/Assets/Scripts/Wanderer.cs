@@ -5,15 +5,22 @@ public class Wanderer : MonoBehaviour {
     [SerializeField] private float turnSpeed = 2f;
     [SerializeField] private float changeDirectionTime = 2f;
 
-    [SerializeField] private Vector2 areaSize = new Vector2(15f, 8f);
-    [SerializeField] private Vector2 areaOffset = Vector2.zero;
+    public Vector2 areaSize = new Vector2(15f, 8f);
+    public Vector2 areaOffset = Vector2.zero;
 
     [SerializeField] private float predictionDistance = 0.5f;
     [SerializeField] private float wallAvoidanceStrength = 1f;
+    [SerializeField] private float targetAvoidanceStrength = 0.5f;
+
+    [SerializeField] private float targetAvoidanceDistance = 3f;
 
     private Vector2 currentDirection;
     private Vector2 targetDirection;
     private float timer;
+
+    // TEMP
+    public Wanderer wandererToAvoid;
+
 
     void Start() {
         SetRandomDirection();
@@ -22,6 +29,10 @@ public class Wanderer : MonoBehaviour {
 
     void Update() {
         AvoidWalls();
+
+        if (wandererToAvoid != null) {
+            AvoidTarget(wandererToAvoid.transform.position);
+        }
 
         currentDirection = Vector2.Lerp(currentDirection, targetDirection, Time.deltaTime * turnSpeed).normalized;
 
@@ -67,6 +78,17 @@ public class Wanderer : MonoBehaviour {
         }
     }
 
+    private void AvoidTarget(Vector3 targetPosition) {
+        Vector3 directionAwayFromTarget = transform.position - targetPosition;
+
+        float distanceToTarget = directionAwayFromTarget.magnitude;
+
+        if (distanceToTarget < targetAvoidanceDistance) {
+            float avoidanceFactor = Mathf.Lerp(0f, targetAvoidanceStrength, 1f - (distanceToTarget / targetAvoidanceDistance));
+            targetDirection += new Vector2(directionAwayFromTarget.x, directionAwayFromTarget.y).normalized * avoidanceFactor;
+        }
+    }
+
     private void OnDrawGizmosSelected() {
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(areaOffset, new Vector3(areaSize.x, areaSize.y, 0));
@@ -75,3 +97,4 @@ public class Wanderer : MonoBehaviour {
         Gizmos.DrawLine(transform.position, transform.position + (Vector3)(currentDirection * predictionDistance));
     }
 }
+

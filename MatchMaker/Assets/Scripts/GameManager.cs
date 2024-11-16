@@ -164,6 +164,13 @@ public class GameManager : MonoBehaviour
     IEnumerator WrongWanderersSelectedCoroutine() {
         bCanClick = false;
         
+        foreach (Wanderer wanderer in selectedWanderers) {
+            if (wanderer == match1 || wanderer == match2) continue;
+
+            // TODO: Change ? to "X" animation for wrong selected wanderer
+
+        }
+
         yield return new WaitForSeconds(spamPreventionTime);
 
         for (int i = selectedWanderers.Count - 1; i >= 0; i--) { 

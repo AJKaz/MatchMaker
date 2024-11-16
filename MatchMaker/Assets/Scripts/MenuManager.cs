@@ -5,6 +5,9 @@ public class MenuManager : MonoBehaviour
     public GameObject pauseObj;
     public GameObject gameUIObj;
 
+    public GameObject winObj;
+    public GameObject lossObj;
+
     // Update is called once per frame
     void Update()
     {
@@ -23,6 +26,18 @@ public class MenuManager : MonoBehaviour
     public void UnpauseGame()
     {
         pauseObj.SetActive(false);
+        gameUIObj.SetActive(false);
+    }
+
+    public void WinMenu()
+    {
+        winObj.SetActive(true);
+        gameUIObj.SetActive(false);
+    }
+
+    public void LossMenu()
+    {
+        lossObj.SetActive(true);
         gameUIObj.SetActive(false);
     }
 }

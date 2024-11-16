@@ -24,7 +24,10 @@ public class GameManager : MonoBehaviour
     private Wanderer test;
 
     public TextMeshProUGUI timerText;
-    public float timer;
+    public float timer = 60.0f;
+    public float currentTime;
+
+    public MenuManager menuManager;
 
     private void Start() {
         if (Instance == null) Instance = this;
@@ -34,6 +37,8 @@ public class GameManager : MonoBehaviour
             CreateWanderers();
             CreateMatch();
         }
+
+        currentTime = timer;
     }
 
     private void CreateWanderers() {
@@ -78,6 +83,16 @@ public class GameManager : MonoBehaviour
     private void Update() {
         if (Input.GetMouseButtonDown(0)) {
             HandleClick();
+        }
+
+        if (currentTime > 0)
+        {
+            currentTime -= Time.deltaTime;
+            timerText.text = currentTime.ToString("F1");
+        }
+        else
+        {
+            menuManager.LossMenu();
         }
     }
 

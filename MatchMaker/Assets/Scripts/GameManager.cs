@@ -6,18 +6,18 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    [SerializeField] private bool bCreateWanderers = true;
+
     [SerializeField] private Wanderer wandererPrefab;
 
     [SerializeField] private List<Sprite> sprites = new List<Sprite>();
 
     [SerializeField] private List<Wanderer> wanderers = new List<Wanderer>();
 
-    public Vector2 areaSize = new Vector2(10f, 10f);
-
     private void Start() {
         if (Instance == null) Instance = this;
 
-        CreateWanderers();
+        if (bCreateWanderers) CreateWanderers();
     }
 
     private void CreateWanderers() {
@@ -31,10 +31,5 @@ public class GameManager : MonoBehaviour
 
             wanderers.Add(newWanderer);
         }
-    }
-    private void OnDrawGizmosSelected() {
-        // area
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(Vector3.zero, new Vector3(areaSize.x, areaSize.y, 0));
     }
 }

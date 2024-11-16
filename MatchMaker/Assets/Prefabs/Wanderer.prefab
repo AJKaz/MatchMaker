@@ -49,6 +49,7 @@ MonoBehaviour:
   turnSpeed: 2
   changeDirectionTime: 2
   areaSize: {x: 16, y: 8.5}
+  areaOffset: {x: 0, y: 0}
   predictionDistance: 2
   wallAvoidanceStrength: 3
 --- !u!1 &4779801077341372600

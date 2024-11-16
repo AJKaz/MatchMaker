@@ -167,22 +167,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3466069845536959921, guid: 6c1cab6b4f06bc945be5d9029bcf0b86, type: 3}
-      propertyPath: areaSize.x
-      value: 17.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3466069845536959921, guid: 6c1cab6b4f06bc945be5d9029bcf0b86, type: 3}
-      propertyPath: areaSize.y
-      value: 9.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3466069845536959921, guid: 6c1cab6b4f06bc945be5d9029bcf0b86, type: 3}
-      propertyPath: areaOffset.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3466069845536959921, guid: 6c1cab6b4f06bc945be5d9029bcf0b86, type: 3}
-      propertyPath: areaOffset.y
-      value: -0.88
-      objectReference: {fileID: 0}
     - target: {fileID: 4386693297409294148, guid: 6c1cab6b4f06bc945be5d9029bcf0b86, type: 3}
       propertyPath: m_Name
       value: Wanderer

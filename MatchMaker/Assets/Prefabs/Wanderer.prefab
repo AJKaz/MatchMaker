@@ -48,8 +48,8 @@ MonoBehaviour:
   moveSpeed: 0.5
   turnSpeed: 2
   changeDirectionTime: 2
-  areaSize: {x: 16, y: 8.5}
-  areaOffset: {x: 0, y: 0}
+  areaSize: {x: 17.5, y: 9.5}
+  areaOffset: {x: 0, y: -0.88}
   predictionDistance: 2
   wallAvoidanceStrength: 3
 --- !u!1 &4779801077341372600

@@ -44,5 +44,8 @@ TagManager:
   - name: Wanderers
     uniqueID: 3475966359
     locked: 0
+  - name: UI
+    uniqueID: 887551657
+    locked: 0
   m_RenderingLayers:
   - Default

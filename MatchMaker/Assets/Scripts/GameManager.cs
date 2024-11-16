@@ -23,12 +23,17 @@ public class GameManager : MonoBehaviour
 
     private List<Wanderer> selectedWanderers = new List<Wanderer>();
 
+    private float gameStartTimer = 2.4f;
+    private bool gameStartTimerOn = true;
+
     public TextMeshProUGUI timerText;
     public float timer = 60.0f;
     public float currentTime;
-    public bool timerOn = true;
+    public bool timerOn = false;
 
     public MenuManager menuManager;
+
+    private Animator animator;
 
     private void Start() {
         if (Instance == null) Instance = this;
@@ -49,6 +54,9 @@ public class GameManager : MonoBehaviour
            
             Wanderer newWanderer = Instantiate(wandererPrefab, new Vector2(x, y), Quaternion.identity, gameObject.transform);
             newWanderer.spriteRenderer.sprite = sprite;
+
+            animator = newWanderer.GetComponent<Animator>();
+            animator.Play(0, -1, Random.Range(0f, 1f)); // Randomize start offset
 
             wandererList.Add(newWanderer);
         }
@@ -71,15 +79,18 @@ public class GameManager : MonoBehaviour
             HandleClick();
         }
 
+        if (gameStartTimer > 0)
+        {
+            gameStartTimer -= Time.deltaTime;
+        }
+        else { timerOn = true; }
+
+        timerText.text = currentTime.ToString("F1");
         if (timerOn && currentTime > 0)
         {
             currentTime -= Time.deltaTime;
-            timerText.text = currentTime.ToString("F1");
         }
-        else
-        {
-            menuManager.LossMenu();
-        }
+        else if (currentTime <= 0 && !timerOn) { menuManager.LossMenu(); }
     }
 
     private void HandleClick() {
@@ -102,13 +113,14 @@ public class GameManager : MonoBehaviour
 
             wanderer.SetMovement(true);
             selectedWanderers.Remove(wanderer);
-
+            wanderer.GetComponent<Animator>().SetBool("Selected", false);
         }
         else {
             // Select wanderer
             selectedWanderers.Add(wanderer);
 
             wanderer.SetMovement(false);
+            wanderer.GetComponent<Animator>().SetBool("Selected", true);
         }
 
         // Check Win Condition

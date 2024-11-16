@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
             // TEMP
             if (i == 0) {
                 test = newWanderer;
+                newWanderer.bWander = false;
                 i++;
                 continue;
             }
@@ -74,9 +75,31 @@ public class GameManager : MonoBehaviour
         match2 = wanderers[randomIndex];
     }
 
-    private void StartTimer()
-    {
-        
+    private void Update() {
+        if (Input.GetMouseButtonDown(0)) {
+            HandleClick();
+        }
     }
 
+    private void HandleClick() {
+        // raycast from mouse to wanderer
+    }
+
+    // TODO: Finish this
+    public bool IsIndexSelected(int index) {
+        if (index == 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    private void SelectWanderer() {
+        //wanderer.bWander = false;
+    }
+
+    private void DeselectWanderer() {
+        //wanderer.bWander = true;
+    }
 }

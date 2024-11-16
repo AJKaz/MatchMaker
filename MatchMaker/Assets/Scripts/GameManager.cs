@@ -147,10 +147,9 @@ public class GameManager : MonoBehaviour
         if (selectedWanderers.Contains(match1) && selectedWanderers.Contains(match2)) {
             bCanClick = false;
             
-            Debug.Log("WIN");
             foreach(Wanderer wanderer in wandererList) {
                 if (wanderer == match1 || wanderer == match2) {
-                    // go to center
+                    // TODO: go to center
                 }
                 else {
                     wanderer.Scatter();
@@ -184,9 +183,13 @@ public class GameManager : MonoBehaviour
     }
 
     private void ForceWin() {
-        selectedWanderers.Clear();
+        for (int i = selectedWanderers.Count - 1; i >= 0; i--) {
+            DeselectWanderer(selectedWanderers[i]);
+        }
+
         SelectWanderer(match1);
         SelectWanderer(match2);
+
         CheckWin();
     }
 

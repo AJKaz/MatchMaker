@@ -5,8 +5,8 @@ public class Wanderer : MonoBehaviour {
     [SerializeField] private float turnSpeed = 2f;
     [SerializeField] private float changeDirectionTime = 2f;
 
-    [SerializeField] private Vector2 areaSize = new Vector2(15f, 8f);
-    [SerializeField] private Vector2 areaOffset = Vector2.zero;
+    public Vector2 areaSize = new Vector2(15f, 8f);
+    public Vector2 areaOffset = Vector2.zero;
 
     [SerializeField] private float predictionDistance = 0.5f;
     [SerializeField] private float wallAvoidanceStrength = 1f;

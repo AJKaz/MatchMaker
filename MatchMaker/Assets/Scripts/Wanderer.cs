@@ -1,10 +1,13 @@
 using UnityEngine;
 
 public class Wanderer : MonoBehaviour {
-    [SerializeField] private float moveSpeed = 2f;              
-    [SerializeField] private float turnSpeed = 2f;             
+    [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float turnSpeed = 2f;
     [SerializeField] private float changeDirectionTime = 2f;
-    
+
+    [SerializeField] private Vector2 areaSize = new Vector2(15f, 8f);
+    [SerializeField] private Vector2 areaOffset = Vector2.zero;
+
     [SerializeField] private float predictionDistance = 0.5f;
     [SerializeField] private float wallAvoidanceStrength = 1f;
 
@@ -18,14 +21,14 @@ public class Wanderer : MonoBehaviour {
     }
 
     void Update() {
-        PredictAndAdjustDirection();
+        AvoidWalls();
 
         currentDirection = Vector2.Lerp(currentDirection, targetDirection, Time.deltaTime * turnSpeed).normalized;
 
         Vector3 newPosition = transform.position + (Vector3)(currentDirection * moveSpeed * Time.deltaTime);
 
-        newPosition.x = Mathf.Clamp(newPosition.x, -GameManager.Instance.areaSize.x / 2, GameManager.Instance.areaSize.x / 2);
-        newPosition.y = Mathf.Clamp(newPosition.y, -GameManager.Instance.areaSize.y / 2, GameManager.Instance.areaSize.y / 2);
+        newPosition.x = Mathf.Clamp(newPosition.x, areaOffset.x - areaSize.x / 2, areaOffset.x + areaSize.x / 2);
+        newPosition.y = Mathf.Clamp(newPosition.y, areaOffset.y - areaSize.y / 2, areaOffset.y + areaSize.y / 2);
         transform.position = newPosition;
 
         timer += Time.deltaTime;
@@ -33,8 +36,6 @@ public class Wanderer : MonoBehaviour {
             SetRandomDirection();
             timer = 0f;
         }
-
-        //RotateToFaceDirection();
     }
 
     private void SetRandomDirection() {
@@ -42,35 +43,34 @@ public class Wanderer : MonoBehaviour {
         targetDirection = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)).normalized;
     }
 
-    private void PredictAndAdjustDirection() {
-        Vector3 predictedPosition = transform.position + (Vector3)(currentDirection * predictionDistance);
+    private void AvoidWalls() {
+        Vector3 position = transform.position;
 
-        if (predictedPosition.x < -GameManager.Instance.areaSize.x / 2 || predictedPosition.x > GameManager.Instance.areaSize.x / 2) {
-            float adjustment = wallAvoidanceStrength * (predictedPosition.x < 0 ? 1 : -1);
-            targetDirection += new Vector2(adjustment, 0).normalized;
+        Vector2 avoidanceForce = Vector2.zero;
+
+        if (position.x < areaOffset.x - areaSize.x / 2 + predictionDistance) {
+            avoidanceForce += Vector2.right * wallAvoidanceStrength;
+        }
+        else if (position.x > areaOffset.x + areaSize.x / 2 - predictionDistance) {
+            avoidanceForce += Vector2.left * wallAvoidanceStrength;
         }
 
-        if (predictedPosition.y < -GameManager.Instance.areaSize.y / 2 || predictedPosition.y > GameManager.Instance.areaSize.y / 2) {
-            float adjustment = wallAvoidanceStrength * (predictedPosition.y < 0 ? 1 : -1);
-            targetDirection += new Vector2(0, adjustment).normalized;
+        if (position.y < areaOffset.y - areaSize.y / 2 + predictionDistance) {
+            avoidanceForce += Vector2.up * wallAvoidanceStrength;
+        }
+        else if (position.y > areaOffset.y + areaSize.y / 2 - predictionDistance) {
+            avoidanceForce += Vector2.down * wallAvoidanceStrength;
         }
 
-        targetDirection = targetDirection.normalized;
-    }
-
-    private void RotateToFaceDirection() {
-        if (currentDirection.sqrMagnitude > 0.01f) {
-            float angle = Mathf.Atan2(currentDirection.y, currentDirection.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, 0f, angle - 90f);
+        if (avoidanceForce != Vector2.zero) {
+            targetDirection = (targetDirection + avoidanceForce).normalized;
         }
     }
 
     private void OnDrawGizmosSelected() {
-        // area
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(Vector3.zero, new Vector3(GameManager.Instance.areaSize.x, GameManager.Instance.areaSize.y, 0));
+        Gizmos.DrawWireCube(areaOffset, new Vector3(areaSize.x, areaSize.y, 0));
 
-        // forward prediction
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, transform.position + (Vector3)(currentDirection * predictionDistance));
     }

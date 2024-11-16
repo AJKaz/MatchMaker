@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     public Image match1Sprite;
     public Image match2Sprite;
 
-    private Wanderer test;
+    private List<Wanderer> selectedWanderers = new List<Wanderer>();
 
     private void Start() {
         if (Instance == null) Instance = this;
@@ -33,41 +33,26 @@ public class GameManager : MonoBehaviour
     }
 
     private void CreateWanderers() {
-        int i = 0;
         foreach (Sprite sprite in sprites) {
             float x = Random.Range(-wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x, wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x);
             float y = Random.Range(-wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y, wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y);
            
             Wanderer newWanderer = Instantiate(wandererPrefab, new Vector2(x, y), Quaternion.identity);
-
-            SpriteRenderer renderer = newWanderer.GetComponentInChildren<SpriteRenderer>();
-            if (renderer != null) {
-                renderer.sprite = sprite;
-            }
+            newWanderer.spriteRenderer.sprite = sprite;
 
             wanderers.Add(newWanderer);
-            
-            // TEMP
-            if (i == 0) {
-                test = newWanderer;
-                newWanderer.bWander = false;
-                i++;
-                continue;
-            }
-            newWanderer.wandererToAvoid = test;
-            i++;
         }
     }
 
     private void CreateMatch()
     {
         int randomIndex = Random.Range(0, wanderers.Count);
-        match1Sprite.sprite = wanderers[randomIndex].GetComponentInChildren<SpriteRenderer>().sprite;
+        match1Sprite.sprite = wanderers[randomIndex].spriteRenderer.sprite;
         match1 = wanderers[randomIndex];
 
         // Get a random index
         randomIndex = Random.Range(0, wanderers.Count);
-        match2Sprite.sprite = wanderers[randomIndex].GetComponentInChildren<SpriteRenderer>().sprite;
+        match2Sprite.sprite = wanderers[randomIndex].spriteRenderer.sprite;
         match2 = wanderers[randomIndex];
     }
 
@@ -79,23 +64,50 @@ public class GameManager : MonoBehaviour
 
     private void HandleClick() {
         // raycast from mouse to wanderer
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
+
+        if (hit.collider != null) {
+            Wanderer clickedWanderer = hit.collider.GetComponent<Wanderer>();
+            if (clickedWanderer != null)
+            {
+                WandererClicked(clickedWanderer);
+            }
+        }
     }
 
-    // TODO: Finish this
-    public bool IsIndexSelected(int index) {
-        if (index == 0) {
-            return true;
+    private void WandererClicked(Wanderer wanderer) {
+        if (IsWandererSelected(wanderer)) {
+            // Deselect wanderer
+
+            wanderer.SetMovement(true);
+            selectedWanderers.Remove(wanderer);
+
+        }
+        else {
+            // Select wanderer
+            selectedWanderers.Add(wanderer);
+
+            wanderer.SetMovement(false);
         }
 
-        return false;
+        // Check Win Condition
+        if (selectedWanderers.Count == 2) CheckWin();
+
+    }
+
+    private void CheckWin() {
+        if (selectedWanderers.Contains(match1) && selectedWanderers.Contains(match2)) {
+            Debug.Log("WIN");
+        }
+        else {
+            Debug.Log("YOU SUCK DUMBASS");
+        }
     }
 
 
-    private void SelectWanderer() {
-        //wanderer.bWander = false;
-    }
-
-    private void DeselectWanderer() {
-        //wanderer.bWander = true;
+    // TODO: Finish this
+    public bool IsWandererSelected(Wanderer wanderer) {
+       return selectedWanderers.Contains(wanderer);
     }
 }

@@ -19,10 +19,9 @@ public class Wanderer : MonoBehaviour {
     private Vector2 targetDirection;
     private float timer;
 
-    // TEMP
-    public Wanderer wandererToAvoid;
+    public SpriteRenderer spriteRenderer;
 
-    public bool bWander = true;
+    private bool bWander = true;
 
     void Start() {
         SetRandomDirection();
@@ -37,7 +36,7 @@ public class Wanderer : MonoBehaviour {
         AvoidWalls();
 
         for (int i = 0; i < GameManager.Instance.wanderers.Count; i++) {
-            float avoidanceDistance = GameManager.Instance.IsIndexSelected(i) ? targetAvoidanceDistance : normalAvoidanceDistance;
+            float avoidanceDistance = GameManager.Instance.IsWandererSelected(GameManager.Instance.wanderers[i]) ? targetAvoidanceDistance : normalAvoidanceDistance;
             AvoidPosition(GameManager.Instance.wanderers[i].transform.position, avoidanceDistance);
         }
 
@@ -94,6 +93,10 @@ public class Wanderer : MonoBehaviour {
             float avoidanceFactor = Mathf.Lerp(0f, targetAvoidanceStrength, 1f - (distanceToTarget / avoidanceDistance));
             targetDirection += new Vector2(directionAwayFromTarget.x, directionAwayFromTarget.y).normalized * avoidanceFactor;
         }
+    }
+
+    public void SetMovement(bool bShouldWander) {
+        bWander = bShouldWander;
     }
 
     private void OnDrawGizmosSelected() {

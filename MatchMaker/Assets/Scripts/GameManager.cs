@@ -14,14 +14,16 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private List<Sprite> sprites = new List<Sprite>();
 
-    public List<Wanderer> wanderers = new List<Wanderer>();
+    [SerializeField] private Transform Wanderers;
+
+    public List<Wanderer> wandererList = new List<Wanderer>();
     public Wanderer match1;
     public Wanderer match2;
 
     public Image match1Sprite;
     public Image match2Sprite;
 
-    private Wanderer test;
+    private List<Wanderer> selectedWanderers = new List<Wanderer>();
 
     public TextMeshProUGUI timerText;
     public float timer = 60.0f;
@@ -42,42 +44,27 @@ public class GameManager : MonoBehaviour
     }
 
     private void CreateWanderers() {
-        int i = 0;
         foreach (Sprite sprite in sprites) {
             float x = Random.Range(-wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x, wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x);
             float y = Random.Range(-wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y, wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y);
            
-            Wanderer newWanderer = Instantiate(wandererPrefab, new Vector2(x, y), Quaternion.identity);
+            Wanderer newWanderer = Instantiate(wandererPrefab, new Vector2(x, y), Quaternion.identity, Wanderers);
+            newWanderer.spriteRenderer.sprite = sprite;
 
-            SpriteRenderer renderer = newWanderer.GetComponentInChildren<SpriteRenderer>();
-            if (renderer != null) {
-                renderer.sprite = sprite;
-            }
-
-            wanderers.Add(newWanderer);
-            
-            // TEMP
-            if (i == 0) {
-                test = newWanderer;
-                newWanderer.bWander = false;
-                i++;
-                continue;
-            }
-            newWanderer.wandererToAvoid = test;
-            i++;
+            wandererList.Add(newWanderer);
         }
     }
 
     private void CreateMatch()
     {
-        int randomIndex = Random.Range(0, wanderers.Count);
-        match1Sprite.sprite = wanderers[randomIndex].GetComponentInChildren<SpriteRenderer>().sprite;
-        match1 = wanderers[randomIndex];
+        int randomIndex = Random.Range(0, wandererList.Count);
+        match1Sprite.sprite = wandererList[randomIndex].spriteRenderer.sprite;
+        match1 = wandererList[randomIndex];
 
         // Get a random index
-        randomIndex = Random.Range(0, wanderers.Count);
-        match2Sprite.sprite = wanderers[randomIndex].GetComponentInChildren<SpriteRenderer>().sprite;
-        match2 = wanderers[randomIndex];
+        randomIndex = Random.Range(0, wandererList.Count);
+        match2Sprite.sprite = wandererList[randomIndex].spriteRenderer.sprite;
+        match2 = wandererList[randomIndex];
     }
 
     private void Update() {
@@ -98,23 +85,50 @@ public class GameManager : MonoBehaviour
 
     private void HandleClick() {
         // raycast from mouse to wanderer
+        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
+
+        if (hit.collider != null) {
+            Wanderer clickedWanderer = hit.collider.GetComponent<Wanderer>();
+            if (clickedWanderer != null)
+            {
+                WandererClicked(clickedWanderer);
+            }
+        }
     }
 
-    // TODO: Finish this
-    public bool IsIndexSelected(int index) {
-        if (index == 0) {
-            return true;
+    private void WandererClicked(Wanderer wanderer) {
+        if (IsWandererSelected(wanderer)) {
+            // Deselect wanderer
+
+            wanderer.SetMovement(true);
+            selectedWanderers.Remove(wanderer);
+
+        }
+        else {
+            // Select wanderer
+            selectedWanderers.Add(wanderer);
+
+            wanderer.SetMovement(false);
         }
 
-        return false;
+        // Check Win Condition
+        if (selectedWanderers.Count == 2) CheckWin();
+
+    }
+
+    private void CheckWin() {
+        if (selectedWanderers.Contains(match1) && selectedWanderers.Contains(match2)) {
+            Debug.Log("WIN");
+        }
+        else {
+            Debug.Log("YOU SUCK DUMBASS");
+        }
     }
 
 
-    private void SelectWanderer() {
-        //wanderer.bWander = false;
-    }
-
-    private void DeselectWanderer() {
-        //wanderer.bWander = true;
+    // TODO: Finish this
+    public bool IsWandererSelected(Wanderer wanderer) {
+       return selectedWanderers.Contains(wanderer);
     }
 }

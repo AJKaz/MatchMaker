@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
     private void Update() {
         if (bMatchesFound) {
             if (match1.bAtTarget && match2.bAtTarget) {
-                // TODO: Both r now in center, play anim
+                // Dom TODO: Both r now in center, play anim
                 Debug.Log("BOTH AT CENTER");
             }
 
@@ -110,7 +110,14 @@ public class GameManager : MonoBehaviour
         {
             currentTime -= Time.deltaTime;
         }
-        else if (currentTime <= 0 && !timerOn) { menuManager.LossMenu(); }
+        else if (currentTime <= 0) {
+            // Time out, you lost
+            foreach (Wanderer wanderer in wandererList) {
+                wanderer.Scatter();
+            }
+
+            menuManager.LossMenu(); 
+        }
     }
 
     private void HandleClick() {
@@ -185,7 +192,7 @@ public class GameManager : MonoBehaviour
         foreach (Wanderer wanderer in selectedWanderers) {
             if (wanderer == match1 || wanderer == match2) continue;
 
-            // TODO: Change ? to "X" animation for wrong selected wanderer
+            // Dom TODO: Change ? to "X" animation for wrong selected wanderer
 
         }
 

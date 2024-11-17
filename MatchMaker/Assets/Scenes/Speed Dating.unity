@@ -3382,6 +3382,7 @@ GameObject:
   - component: {fileID: 1315443302}
   - component: {fileID: 1315443304}
   - component: {fileID: 1315443303}
+  - component: {fileID: 1315443305}
   m_Layer: 5
   m_Name: Icon (1)
   m_TagString: Untagged
@@ -3446,6 +3447,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1315443301}
   m_CullTransparentMesh: 1
+--- !u!95 &1315443305
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315443301}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 55acb799039288b4794f02349d853b83, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1327582504
 GameObject:
   m_ObjectHideFlags: 0
@@ -4481,8 +4504,9 @@ MonoBehaviour:
   match2Sprite: {fileID: 1762063802}
   bCreateWanderers: 1
   gameMode: 1
-  normalTimer: 4
-  speedTimer: 3
+  normalTimer: 60
+  speedTimer: 120
+  speedDateCooldown: 0.75
   timerText: {fileID: 1954731833}
   currentTime: 0
   timerOn: 0
@@ -4502,6 +4526,7 @@ GameObject:
   - component: {fileID: 1762063801}
   - component: {fileID: 1762063803}
   - component: {fileID: 1762063802}
+  - component: {fileID: 1762063804}
   m_Layer: 5
   m_Name: Icon (2)
   m_TagString: Untagged
@@ -4566,6 +4591,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1762063800}
   m_CullTransparentMesh: 1
+--- !u!95 &1762063804
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762063800}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 55acb799039288b4794f02349d853b83, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1784249540
 GameObject:
   m_ObjectHideFlags: 0

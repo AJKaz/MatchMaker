@@ -277,6 +277,9 @@ public class GameManager : MonoBehaviour
         match1.GetComponent<Animator>().SetBool("Match", false);
         match2.GetComponent<Animator>().SetBool("Match", false);
         ClearAllSelectedWanderers();
+
+        match1Sprite.GetComponent<Animator>().SetTrigger("Switch");
+        match2Sprite.GetComponent<Animator>().SetTrigger("Switch");
         CreateMatch();
 
     }

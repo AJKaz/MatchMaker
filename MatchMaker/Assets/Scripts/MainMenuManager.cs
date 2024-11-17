@@ -10,6 +10,9 @@ public class MainMenuManager : MonoBehaviour
     public Image icon1;
     public Image icon2;
 
+    public GameObject menuUI;
+    public GameObject htpUI;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -31,5 +34,17 @@ public class MainMenuManager : MonoBehaviour
     public void OnExitClicked()
     {
         Application.Quit();
+    }
+
+    public void OnHTPClicked()
+    {
+        menuUI.SetActive(false);
+        htpUI.SetActive(true);
+    }
+
+    public void OnReturnClicked()
+    {
+        menuUI.SetActive(true);
+        htpUI.SetActive(false);
     }
 }

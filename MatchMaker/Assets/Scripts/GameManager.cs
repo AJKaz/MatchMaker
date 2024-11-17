@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour
         {
             currentTime -= Time.deltaTime;
         }
-        else if (currentTime <= 0 && !timerOn) { menuManager.LossMenu(); }
+        else if (currentTime <= 0) { menuManager.LossMenu(); }
     }
 
     private void HandleClick() {

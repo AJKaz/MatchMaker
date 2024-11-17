@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
@@ -8,25 +9,31 @@ public class MenuManager : MonoBehaviour
     public GameObject winObj;
     public GameObject lossObj;
 
+    public bool isPaused = false;
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
+        if (!isPaused && Input.GetKeyDown(KeyCode.Escape) || !isPaused && Input.GetKeyDown(KeyCode.P))
         {
             PauseGame();
+        }
+        else if (isPaused && Input.GetKeyDown(KeyCode.Escape) || isPaused && Input.GetKeyDown(KeyCode.P))
+        {
+            UnpauseGame();
         }
     }
 
     public void PauseGame()
     {
         pauseObj.SetActive(true);
-        gameUIObj.SetActive(false);
+        isPaused = true;
     }
 
     public void UnpauseGame()
     {
         pauseObj.SetActive(false);
-        gameUIObj.SetActive(true);
+        isPaused = false;
     }
 
     public void WinMenu()
@@ -39,5 +46,15 @@ public class MenuManager : MonoBehaviour
     {
         lossObj.SetActive(true);
         gameUIObj.SetActive(false);
+    }
+
+    public void OnResumeClick()
+    {
+        UnpauseGame ();
+    }
+
+    public void OnExitToMenuClick()
+    {
+        SceneManager.LoadScene(0);
     }
 }

@@ -4,33 +4,45 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
+public enum GameMode {
+    Normal = 0,
+    SpeedDating = 1,
+}
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    [SerializeField] private bool bCreateWanderers = true;
 
     [SerializeField] private Wanderer wandererPrefab;
 
     [SerializeField] private List<Sprite> sprites = new List<Sprite>();
 
-    public List<Wanderer> wandererList = new List<Wanderer>();
+    [HideInInspector] public List<Wanderer> wandererList = new List<Wanderer>();
     public Wanderer match1;
     public Wanderer match2;
 
     public Image match1Sprite;
     public Image match2Sprite;
+    
+    [SerializeField] private bool bCreateWanderers = true;
+    [SerializeField] private GameMode gameMode = GameMode.Normal;
+    [Header("Normal Dating")]
+    public float normalTimer = 60.0f;
+
+    [Header("Speed Dating")]
+    public float speedTimer = 120.0f;
+    private int numMatches = 0;
 
     private List<Wanderer> selectedWanderers = new List<Wanderer>();
 
     private float gameStartTimer = 2.4f;
     private bool gameStartTimerOn = true;
 
+    [Header("UI")]
     public TextMeshProUGUI timerText;
-    public float timer = 60.0f;
     public float currentTime;
     public bool timerOn = false;
-
     public MenuManager menuManager;
 
     private Animator animator;
@@ -52,7 +64,16 @@ public class GameManager : MonoBehaviour
             CreateMatch();
         }
 
-        currentTime = timer;
+        if (gameMode == GameMode.Normal) {
+            // Normal Dating
+            currentTime = normalTimer;
+
+        }
+        else {
+            // Speed Dating
+            currentTime = speedTimer;
+
+        }
     }
 
     private void CreateWanderers() {
@@ -72,14 +93,17 @@ public class GameManager : MonoBehaviour
 
     private void CreateMatch()
     {
-        int randomIndex = Random.Range(0, wandererList.Count);
-        match1Sprite.sprite = wandererList[randomIndex].spriteRenderer.sprite;
-        match1 = wandererList[randomIndex];
+        int randomIndex1 = Random.Range(0, wandererList.Count);
+        match1Sprite.sprite = wandererList[randomIndex1].spriteRenderer.sprite;
+        match1 = wandererList[randomIndex1];
 
-        // Get a random index
-        randomIndex = Random.Range(0, wandererList.Count);
-        match2Sprite.sprite = wandererList[randomIndex].spriteRenderer.sprite;
-        match2 = wandererList[randomIndex];
+        // Ensure no matches of same 2
+        int randomIndex2 = Random.Range(0, wandererList.Count);
+        while (randomIndex1 == randomIndex2) {
+            randomIndex2 = Random.Range(0, wandererList.Count);
+        }
+        match2Sprite.sprite = wandererList[randomIndex2].spriteRenderer.sprite;
+        match2 = wandererList[randomIndex2];
     }
 
     private void Update() {
@@ -116,7 +140,13 @@ public class GameManager : MonoBehaviour
                 wanderer.Scatter();
             }
 
-            menuManager.LossMenu(); 
+            if (gameMode == GameMode.SpeedDating) {
+                // todo: speed dating end menu
+            }
+            else {
+                menuManager.LossMenu();
+            }
+
         }
     }
 
@@ -165,21 +195,32 @@ public class GameManager : MonoBehaviour
 
     private void CheckWin() {
         if (selectedWanderers.Contains(match1) && selectedWanderers.Contains(match2)) {
-            // Game Won
-            bMatchesFound = true;
-            bCanClick = false;
-            
-            foreach(Wanderer wanderer in wandererList) {
-                if (wanderer == match1) {
-                    wanderer.SetGoToPosition(match1EndPosition.transform.position);
-                }
-                else if (wanderer == match2) {
-                    wanderer.SetGoToPosition(match2EndPosition.transform.position);
-                }
-                else {
-                    wanderer.Scatter();
+            if (gameMode == GameMode.Normal) {
+                // Game Won
+                bMatchesFound = true;
+                bCanClick = false;
+
+                foreach (Wanderer wanderer in wandererList) {
+                    if (wanderer == match1) {
+                        wanderer.SetGoToPosition(match1EndPosition.transform.position);
+                    }
+                    else if (wanderer == match2) {
+                        wanderer.SetGoToPosition(match2EndPosition.transform.position);
+                    }
+                    else {
+                        wanderer.Scatter();
+                    }
                 }
             }
+            else if (gameMode == GameMode.SpeedDating) {
+                numMatches++;
+                ClearAllSelectedWanderers();
+                CreateMatch();
+
+                // Dom TODO: +1 anim to score?
+            }
+            
+            
         }
         else {
             StartCoroutine(WrongWanderersSelectedCoroutine());
@@ -214,10 +255,14 @@ public class GameManager : MonoBehaviour
        return selectedWanderers.Contains(wanderer);
     }
 
-    private void ForceWin() {
+    private void ClearAllSelectedWanderers() {
         for (int i = selectedWanderers.Count - 1; i >= 0; i--) {
             DeselectWanderer(selectedWanderers[i]);
         }
+    }
+
+    private void ForceWin() {
+        ClearAllSelectedWanderers();
 
         SelectWanderer(match1);
         SelectWanderer(match2);

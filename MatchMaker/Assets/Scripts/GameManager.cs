@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     public float currentTime;
     public bool timerOn = false;
     public MenuManager menuManager;
+    public TextMeshProUGUI matchNumber;
 
     private Animator animator;
 
@@ -111,6 +112,7 @@ public class GameManager : MonoBehaviour
             if (match1.bAtTarget && match2.bAtTarget) {
                 match1.GetComponent<Animator>().SetBool("Match", true);
                 match2.GetComponent<Animator>().SetBool("Match", true);
+                StartCoroutine(WinScreen());
             }
 
             return;
@@ -141,7 +143,9 @@ public class GameManager : MonoBehaviour
             }
 
             if (gameMode == GameMode.SpeedDating) {
-                // todo: speed dating end menu
+
+                matchNumber.text = numMatches.ToString();
+                menuManager.SpeedDatingMenu();
             }
             else {
                 menuManager.LossMenu();
@@ -276,4 +280,15 @@ public class GameManager : MonoBehaviour
         CheckWin();
     }
 
+    IEnumerator WinScreen()
+    {
+        yield return new WaitForSeconds(1f);
+        menuManager.WinMenu();
+    }
+
+    IEnumerator LossScreen()
+    {
+        yield return new WaitForSeconds(1f);
+        menuManager.LossMenu();
+    }
 }

@@ -12,6 +12,7 @@ public class MainMenuManager : MonoBehaviour
 
     public GameObject menuUI;
     public GameObject htpUI;
+    public GameObject playUI;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,7 +29,18 @@ public class MainMenuManager : MonoBehaviour
 
     public void OnPlayClicked()
     {
+        menuUI.SetActive(false);
+        playUI.SetActive(true);
+    }
+
+    public void OnNormalClicked()
+    {
         SceneManager.LoadScene(1);
+    }
+
+    public void OnSpeedClicked()
+    {
+        SceneManager.LoadScene(2);
     }
 
     public void OnExitClicked()
@@ -46,5 +58,6 @@ public class MainMenuManager : MonoBehaviour
     {
         menuUI.SetActive(true);
         htpUI.SetActive(false);
+        playUI.SetActive(false);
     }
 }

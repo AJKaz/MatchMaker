@@ -38,6 +38,10 @@ public class GameManager : MonoBehaviour
     private bool bCanClick = true;
 
     [SerializeField] private float spamPreventionTime = 1f;
+    [SerializeField] private Transform match1EndPosition;
+    [SerializeField] private Transform match2EndPosition;
+
+    private bool bMatchesFound = false;
 
     private void Start() {
         if (Instance == null) Instance = this;
@@ -79,6 +83,15 @@ public class GameManager : MonoBehaviour
     }
 
     private void Update() {
+        if (bMatchesFound) {
+            if (match1.bAtTarget && match2.bAtTarget) {
+                // Dom TODO: Both r now in center, play anim
+                Debug.Log("BOTH AT CENTER");
+            }
+
+            return;
+        }
+
         // REMOVE THIS
         if (Input.GetKeyDown(KeyCode.G)) ForceWin();
 
@@ -97,7 +110,14 @@ public class GameManager : MonoBehaviour
         {
             currentTime -= Time.deltaTime;
         }
-        else if (currentTime <= 0) { menuManager.LossMenu(); }
+        else if (currentTime <= 0) {
+            // Time out, you lost
+            foreach (Wanderer wanderer in wandererList) {
+                wanderer.Scatter();
+            }
+
+            menuManager.LossMenu(); 
+        }
     }
 
     private void HandleClick() {
@@ -145,12 +165,16 @@ public class GameManager : MonoBehaviour
 
     private void CheckWin() {
         if (selectedWanderers.Contains(match1) && selectedWanderers.Contains(match2)) {
+            // Game Won
+            bMatchesFound = true;
             bCanClick = false;
             
-            Debug.Log("WIN");
             foreach(Wanderer wanderer in wandererList) {
-                if (wanderer == match1 || wanderer == match2) {
-                    // go to center
+                if (wanderer == match1) {
+                    wanderer.SetGoToPosition(match1EndPosition.transform.position);
+                }
+                else if (wanderer == match2) {
+                    wanderer.SetGoToPosition(match2EndPosition.transform.position);
                 }
                 else {
                     wanderer.Scatter();
@@ -165,6 +189,13 @@ public class GameManager : MonoBehaviour
     IEnumerator WrongWanderersSelectedCoroutine() {
         bCanClick = false;
         
+        foreach (Wanderer wanderer in selectedWanderers) {
+            if (wanderer == match1 || wanderer == match2) continue;
+
+            // Dom TODO: Change ? to "X" animation for wrong selected wanderer
+
+        }
+
         yield return new WaitForSeconds(spamPreventionTime);
 
         for (int i = selectedWanderers.Count - 1; i >= 0; i--) { 
@@ -184,9 +215,13 @@ public class GameManager : MonoBehaviour
     }
 
     private void ForceWin() {
-        selectedWanderers.Clear();
+        for (int i = selectedWanderers.Count - 1; i >= 0; i--) {
+            DeselectWanderer(selectedWanderers[i]);
+        }
+
         SelectWanderer(match1);
         SelectWanderer(match2);
+
         CheckWin();
     }
 

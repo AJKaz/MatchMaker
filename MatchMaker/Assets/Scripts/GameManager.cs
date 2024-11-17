@@ -79,21 +79,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /*private void CreateWanderers() {
-        foreach (Sprite sprite in sprites) {
-            float x = Random.Range(-wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x, wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x);
-            float y = Random.Range(-wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y, wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y);
-           
-            Wanderer newWanderer = Instantiate(wandererPrefab, new Vector2(x, y), Quaternion.identity, gameObject.transform);
-            newWanderer.spriteRenderer.sprite = sprite;
-
-            animator = newWanderer.GetComponent<Animator>();
-            animator.Play(0, -1, Random.Range(0f, 1f)); // Randomize start offset
-
-            wandererList.Add(newWanderer);
-        }
-    }*/
-
     private void CreateWanderers() {
         foreach (Sprite sprite in sprites) {
             Vector2 spawnPosition;
@@ -179,8 +164,14 @@ public class GameManager : MonoBehaviour
             currentTime -= Time.deltaTime;
         }
         else if (currentTime <= 0) {
-            // Time out, you lost
+            // Time out, game OVER
             foreach (Wanderer wanderer in wandererList) {
+                if (wanderer == match1 || wanderer == match2) {
+                    wanderer.SetMovement(false);
+                    continue;
+                }
+                if (IsWandererSelected(wanderer)) DeselectWanderer(wanderer);
+
                 wanderer.Scatter();
             }
 
@@ -190,7 +181,7 @@ public class GameManager : MonoBehaviour
                 menuManager.SpeedDatingMenu();
             }
             else {
-                menuManager.LossMenu();
+                StartCoroutine(LossScreen());
             }
 
         }
@@ -336,7 +327,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator LossScreen()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
         menuManager.LossMenu();
     }
+
 }

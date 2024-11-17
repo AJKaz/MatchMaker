@@ -232,7 +232,7 @@ MonoBehaviour:
   stoppingDistance: 0.05
   areaSize: {x: 18, y: 10}
   areaOffset: {x: 0, y: -0.8}
-  predictionDistance: 1.5
+  predictionDistance: 1.75
   wallAvoidanceStrength: 3
   targetAvoidanceStrength: 0.5
   normalAvoidanceDistance: 0.35

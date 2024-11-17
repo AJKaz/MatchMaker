@@ -4595,8 +4595,8 @@ MonoBehaviour:
   match2Sprite: {fileID: 1762063802}
   bCreateWanderers: 1
   gameMode: 0
-  normalTimer: 60
-  speedTimer: 120
+  normalTimer: 30
+  speedTimer: 60
   speedDateCooldown: 0.75
   timerText: {fileID: 1954731833}
   currentTime: 0

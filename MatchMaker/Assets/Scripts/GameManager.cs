@@ -213,18 +213,24 @@ public class GameManager : MonoBehaviour
                 }
             }
             else if (gameMode == GameMode.SpeedDating) {
-                numMatches++;
-                ClearAllSelectedWanderers();
-                CreateMatch();
-
-                // Dom TODO: +1 anim to score?
+                StartCoroutine(SpeedMatchCreated());
             }
-            
-            
         }
         else {
             StartCoroutine(WrongWanderersSelectedCoroutine());
         }
+    }
+
+    IEnumerator SpeedMatchCreated() {
+        numMatches++;
+        Debug.Log("Match! Num Scores: " + numMatches);
+        // Dom TODO: +1 anim to score?
+
+        yield return new WaitForSeconds(0.75f);
+
+        ClearAllSelectedWanderers();
+        CreateMatch();
+
     }
 
     IEnumerator WrongWanderersSelectedCoroutine() {

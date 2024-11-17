@@ -68,8 +68,13 @@ public class MenuManager : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void OnReplayClick()
+    public void OnReplayNormalClick()
     {
         SceneManager.LoadScene(1);
+    }
+
+    public void OnReplaySpeedClick()
+    {
+        SceneManager.LoadScene(2);
     }
 }

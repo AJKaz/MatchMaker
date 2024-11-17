@@ -175,6 +175,7 @@ public class GameManager : MonoBehaviour
         timerText.text = currentTime.ToString("F1");
         if (timerOn && currentTime > 0)
         {
+            if (currentTime < 10) { timerText.color = Color.red; }
             currentTime -= Time.deltaTime;
         }
         else if (currentTime <= 0) {

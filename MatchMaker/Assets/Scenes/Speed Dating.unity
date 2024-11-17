@@ -2511,7 +2511,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1734976342}
         m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
-        m_MethodName: OnReplayClick
+        m_MethodName: OnReplaySpeedClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4504,8 +4504,8 @@ MonoBehaviour:
   match2Sprite: {fileID: 1762063802}
   bCreateWanderers: 1
   gameMode: 1
-  normalTimer: 60
-  speedTimer: 120
+  normalTimer: 30
+  speedTimer: 12
   speedDateCooldown: 0.75
   timerText: {fileID: 1954731833}
   currentTime: 0

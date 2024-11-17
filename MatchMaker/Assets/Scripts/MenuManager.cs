@@ -30,12 +30,14 @@ public class MenuManager : MonoBehaviour
 
     public void PauseGame()
     {
+        //GameManager.Instance.PauseBackgroundMusic();
         pauseObj.SetActive(true);
         isPaused = true;
     }
 
     public void UnpauseGame()
     {
+        //GameManager.Instance.PlayBackgroundMusic();
         pauseObj.SetActive(false);
         isPaused = false;
     }

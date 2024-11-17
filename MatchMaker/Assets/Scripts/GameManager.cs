@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     private List<Wanderer> selectedWanderers = new List<Wanderer>();
 
     private float gameStartTimer = 2.4f;
-    private bool gameStartTimerOn = true;
+    //private bool gameStartTimerOn = true;
 
     [Header("UI")]
     public TextMeshProUGUI timerText;
@@ -58,8 +58,20 @@ public class GameManager : MonoBehaviour
 
     private bool bMatchesFound = false;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource backgroundAudioSource;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip matchMadeSound;
+    [SerializeField] private AudioClip winSound;
+    [SerializeField] private AudioClip loseSound;
+
+    private bool bGameOver = false;
+
     private void Start() {
         if (Instance == null) Instance = this;
+
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
+        if (backgroundAudioSource == null) Debug.LogWarning("Background music not assigned");
 
         if (bCreateWanderers)
         {
@@ -134,6 +146,8 @@ public class GameManager : MonoBehaviour
     }
 
     private void Update() {
+        if (bGameOver) return;
+
         if (bMatchesFound) {
             if (match1.bAtTarget && match2.bAtTarget) {
                 match1.GetComponent<Animator>().SetBool("Match", true);
@@ -154,8 +168,13 @@ public class GameManager : MonoBehaviour
         if (gameStartTimer > 0)
         {
             gameStartTimer -= Time.deltaTime;
+            if (gameStartTimer <= 0) {
+                backgroundAudioSource.Play();
+            }
         }
-        else { timerOn = true; }
+        else {
+            timerOn = true;
+        }
 
         timerText.text = currentTime.ToString("F1");
         if (timerOn && currentTime > 0)
@@ -176,9 +195,8 @@ public class GameManager : MonoBehaviour
             }
 
             if (gameMode == GameMode.SpeedDating) {
-
-                matchNumber.text = numMatches.ToString();
-                menuManager.SpeedDatingMenu();
+                StartCoroutine(SpeedDatingEndScreen());
+               
             }
             else {
                 StartCoroutine(LossScreen());
@@ -232,6 +250,9 @@ public class GameManager : MonoBehaviour
 
     private void CheckWin() {
         if (selectedWanderers.Contains(match1) && selectedWanderers.Contains(match2)) {
+            // Match Made
+            PlaySoundClip(matchMadeSound);
+
             if (gameMode == GameMode.Normal) {
                 // Game Won
                 bMatchesFound = true;
@@ -321,14 +342,43 @@ public class GameManager : MonoBehaviour
 
     IEnumerator WinScreen()
     {
+        PauseBackgroundMusic();
+        bGameOver = true;
         yield return new WaitForSeconds(1f);
         menuManager.WinMenu();
+        PlaySoundClip(winSound);
     }
 
     IEnumerator LossScreen()
     {
+        PauseBackgroundMusic();
+        bGameOver = true;
         yield return new WaitForSeconds(2f);
         menuManager.LossMenu();
+        PlaySoundClip(loseSound);
     }
 
+    IEnumerator SpeedDatingEndScreen() {
+        PauseBackgroundMusic();
+        bGameOver = true;
+        yield return new WaitForSeconds(2f);
+        matchNumber.text = numMatches.ToString();
+        menuManager.SpeedDatingMenu();
+        PlaySoundClip(winSound);
+    }
+
+    public void PlayBackgroundMusic() {
+        if (backgroundAudioSource) {
+            backgroundAudioSource.Play();
+        }
+    }
+
+    public void PauseBackgroundMusic() {
+        if (backgroundAudioSource) {
+            backgroundAudioSource.Pause();
+        }
+    }
+    private void PlaySoundClip(AudioClip clipToPlay) {
+        if (audioSource != null && clipToPlay != null) audioSource.PlayOneShot(clipToPlay);
+    }
 }

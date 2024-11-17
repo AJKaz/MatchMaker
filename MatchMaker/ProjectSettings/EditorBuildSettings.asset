@@ -10,7 +10,7 @@ EditorBuildSettings:
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
     path: Assets/Scenes/Normal Mode.unity
-    guid: 8a3ccde11d75fbe49ad45263ec589e42
+    guid: 32caf8eebe36cfb48a733897a826b2c0
   - enabled: 1
     path: Assets/Scenes/Speed Dating.unity
     guid: fe361f5abc89ddf4aa2061dfc9f2b98b

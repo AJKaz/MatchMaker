@@ -158,9 +158,6 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // REMOVE THIS
-        if (Input.GetKeyDown(KeyCode.G)) ForceWin();
-
         if (Input.GetMouseButtonDown(0)) {
             HandleClick();
         }

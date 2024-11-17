@@ -6,6 +6,10 @@ public class MenuManager : MonoBehaviour
     public GameObject pauseObj;
     public GameObject gameUIObj;
 
+    public GameObject speedDatingObj;
+
+    public GameObject timerObj;
+
     public GameObject winObj;
     public GameObject lossObj;
 
@@ -47,14 +51,25 @@ public class MenuManager : MonoBehaviour
         lossObj.SetActive(true);
         gameUIObj.SetActive(false);
     }
+    public void SpeedDatingMenu()
+    {
+        speedDatingObj.SetActive(true);
+        gameUIObj.SetActive(false);
+        timerObj.SetActive(false) ;
+    }
 
     public void OnResumeClick()
     {
-        UnpauseGame ();
+        UnpauseGame();
     }
 
     public void OnExitToMenuClick()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void OnReplayClick()
+    {
+        SceneManager.LoadScene(1);
     }
 }

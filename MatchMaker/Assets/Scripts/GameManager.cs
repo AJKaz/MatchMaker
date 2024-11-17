@@ -28,10 +28,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool bCreateWanderers = true;
     [SerializeField] private GameMode gameMode = GameMode.Normal;
     [Header("Normal Dating")]
-    public float normalTimer = 60.0f;
+    [SerializeField] private float normalTimer = 60.0f;
 
     [Header("Speed Dating")]
-    public float speedTimer = 120.0f;
+    [SerializeField] private float speedTimer = 120.0f;
+    [SerializeField] private float speedDateCooldown = 0.75f;
+
     private int numMatches = 0;
 
     private List<Wanderer> selectedWanderers = new List<Wanderer>();
@@ -76,7 +78,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void CreateWanderers() {
+    /*private void CreateWanderers() {
         foreach (Sprite sprite in sprites) {
             float x = Random.Range(-wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x, wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x);
             float y = Random.Range(-wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y, wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y);
@@ -89,6 +91,45 @@ public class GameManager : MonoBehaviour
 
             wandererList.Add(newWanderer);
         }
+    }*/
+
+    private void CreateWanderers() {
+        foreach (Sprite sprite in sprites) {
+            Vector2 spawnPosition;
+
+            // Find a valid spawn position that's NOT in UI or out of bounds
+            do {
+                float x = Random.Range(
+                    -wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x,
+                    wandererPrefab.areaSize.x / 2 + wandererPrefab.areaOffset.x
+                );
+                float y = Random.Range(
+                    -wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y,
+                    wandererPrefab.areaSize.y / 2 + wandererPrefab.areaOffset.y
+                );
+                spawnPosition = new Vector2(x, y);
+            } while (IsInsideBlockedArea(spawnPosition));
+
+            Wanderer newWanderer = Instantiate(wandererPrefab, spawnPosition, Quaternion.identity, gameObject.transform);
+            newWanderer.spriteRenderer.sprite = sprite;
+
+            animator = newWanderer.GetComponent<Animator>();
+            animator.Play(0, -1, Random.Range(0f, 1f)); // Randomize start offset
+
+            wandererList.Add(newWanderer);
+        }
+    }
+
+    private bool IsInsideBlockedArea(Vector2 position) {
+        return IsInsideArea(position, wandererPrefab.matchAreaOffset, wandererPrefab.matchAreaSize) ||
+               IsInsideArea(position, wandererPrefab.timerAreaOffset, wandererPrefab.timerAreaSize);
+    }
+
+    private bool IsInsideArea(Vector2 position, Vector2 areaOffset, Vector2 areaSize) {
+        return position.x > areaOffset.x - areaSize.x / 2 &&
+               position.x < areaOffset.x + areaSize.x / 2 &&
+               position.y > areaOffset.y - areaSize.y / 2 &&
+               position.y < areaOffset.y + areaSize.y / 2;
     }
 
     private void CreateMatch()
@@ -223,11 +264,14 @@ public class GameManager : MonoBehaviour
 
     IEnumerator SpeedMatchCreated() {
         numMatches++;
-        Debug.Log("Match! Num Scores: " + numMatches);
+        match1.GetComponent<Animator>().SetBool("Match", true);
+        match2.GetComponent<Animator>().SetBool("Match", true);
         // Dom TODO: +1 anim to score?
+        
+        yield return new WaitForSeconds(speedDateCooldown);
 
-        yield return new WaitForSeconds(0.75f);
-
+        match1.GetComponent<Animator>().SetBool("Match", false);
+        match2.GetComponent<Animator>().SetBool("Match", false);
         ClearAllSelectedWanderers();
         CreateMatch();
 

@@ -224,19 +224,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd53e54fd70e0f34cab4c9fb76c2d4b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0.4
+  moveSpeed: 0.55
   scatterSpeed: 3.5
   matingSpeed: 2.5
   turnSpeed: 2
   changeDirectionTime: 2
   stoppingDistance: 0.05
-  areaSize: {x: 17.5, y: 9.5}
-  areaOffset: {x: 0, y: -0.88}
-  predictionDistance: 2
+  areaSize: {x: 18, y: 10}
+  areaOffset: {x: 0, y: -0.8}
+  predictionDistance: 1.5
   wallAvoidanceStrength: 3
   targetAvoidanceStrength: 0.5
-  normalAvoidanceDistance: 0.25
+  normalAvoidanceDistance: 0.35
   targetAvoidanceDistance: 1.5
+  matchAreaSize: {x: 4.51, y: 2.6}
+  matchAreaOffset: {x: -6.56, y: 3.71}
+  timerAreaSize: {x: 2.97, y: 2.16}
+  timerAreaOffset: {x: 7.32, y: 3.93}
+  UIAvoidanceStrength: 5
   spriteRenderer: {fileID: 4496041392568221991}
   bAtTarget: 0
 --- !u!70 &6319734752024179514

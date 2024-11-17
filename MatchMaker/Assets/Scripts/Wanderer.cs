@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Wanderer : MonoBehaviour {
     [SerializeField] private float moveSpeed = 0.5f;
@@ -8,16 +9,20 @@ public class Wanderer : MonoBehaviour {
     [SerializeField] private float changeDirectionTime = 2f;
     [SerializeField] private float stoppingDistance = 1f;
 
-
     public Vector2 areaSize = new Vector2(15f, 8f);
     public Vector2 areaOffset = Vector2.zero;
 
+    [Header("Avoidance")]
     [SerializeField] private float predictionDistance = 0.5f;
     [SerializeField] private float wallAvoidanceStrength = 1f;
     [SerializeField] private float targetAvoidanceStrength = 0.5f;
-
     [SerializeField] private float normalAvoidanceDistance = 0.5f;
     [SerializeField] private float targetAvoidanceDistance = 2f;
+    public Vector2 matchAreaSize = new Vector2(5f, 3f);
+    public Vector2 matchAreaOffset = new Vector2(-5f, 3f);
+    public Vector2 timerAreaSize = new Vector2(5f, 3f);
+    public Vector2 timerAreaOffset = new Vector2(5f, 3f);
+    [SerializeField] private float UIAvoidanceStrength = 2f;
 
     private Vector2 currentDirection;
     private Vector2 targetDirection;
@@ -52,8 +57,15 @@ public class Wanderer : MonoBehaviour {
         }
         else {
             AvoidWalls();
+
+            // Avoid UI areas
+            AvoidArea(matchAreaOffset, matchAreaSize, UIAvoidanceStrength);
+            AvoidArea(timerAreaOffset, timerAreaSize, UIAvoidanceStrength);
         }
 
+        
+
+        // Slightly avoid other wanderers (and bigger avoid for selected ones)
         for (int i = 0; i < GameManager.Instance.wandererList.Count; i++) {
             float avoidanceDistance = GameManager.Instance.IsWandererSelected(GameManager.Instance.wandererList[i]) ? targetAvoidanceDistance : normalAvoidanceDistance;
             AvoidPosition(GameManager.Instance.wandererList[i].transform.position, avoidanceDistance);
@@ -77,30 +89,23 @@ public class Wanderer : MonoBehaviour {
         }
     }
 
-    public void SetGoToPosition(Vector3 position) {
-        bGoToTargetDestination = true;
-        targetDestination = position;
-        moveSpeed = matingSpeed;
-    }
-
-    private void PathToTarget() {
-        Vector3 direction = targetDestination - transform.position;
-        float distance = direction.magnitude;
-
-        if (distance < stoppingDistance) {
-            transform.position = targetDestination;
-            bAtTarget = true;
-            return;
-        }
-
-        direction = direction.normalized;        
-        Vector3 newPosition = transform.position + direction * moveSpeed * Time.deltaTime;
-        transform.position = newPosition;
-    }
-
     private void SetRandomDirection() {
         float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
         targetDirection = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)).normalized;
+    }
+
+    private void AvoidArea(Vector2 areaOffset, Vector2 areaSize, float avoidanceStrength) {
+        Vector3 position = transform.position;
+
+        if (position.x > areaOffset.x - areaSize.x / 2 - predictionDistance &&
+            position.x < areaOffset.x + areaSize.x / 2 + predictionDistance &&
+            position.y > areaOffset.y - areaSize.y / 2 - predictionDistance && 
+            position.y < areaOffset.y + areaSize.y / 2 + predictionDistance) {
+            Vector3 center = areaOffset;
+            Vector2 directionAway = (position - center).normalized;
+
+            targetDirection += directionAway * avoidanceStrength;
+        }
     }
 
     private void AvoidWalls() {
@@ -127,11 +132,6 @@ public class Wanderer : MonoBehaviour {
         }
     }
 
-    public void Scatter() {
-        bScatter = true;
-        moveSpeed = scatterSpeed;
-    }
-
     private void AvoidPosition(Vector3 targetPosition, float avoidanceDistance) {
         Vector3 directionAwayFromTarget = transform.position - targetPosition;
 
@@ -141,6 +141,31 @@ public class Wanderer : MonoBehaviour {
             float avoidanceFactor = Mathf.Lerp(0f, targetAvoidanceStrength, 1f - (distanceToTarget / avoidanceDistance));
             targetDirection += new Vector2(directionAwayFromTarget.x, directionAwayFromTarget.y).normalized * avoidanceFactor;
         }
+    }
+
+    public void SetGoToPosition(Vector3 position) {
+        bGoToTargetDestination = true;
+        targetDestination = position;
+        moveSpeed = matingSpeed;
+    }
+
+    private void PathToTarget() {
+        Vector3 direction = targetDestination - transform.position;
+        float distance = direction.magnitude;
+
+        if (distance < stoppingDistance) {
+            transform.position = targetDestination;
+            bAtTarget = true;
+            return;
+        }
+
+        direction = direction.normalized;
+        Vector3 newPosition = transform.position + direction * moveSpeed * Time.deltaTime;
+        transform.position = newPosition;
+    }
+    public void Scatter() {
+        bScatter = true;
+        moveSpeed = scatterSpeed;
     }
 
     public void SetMovement(bool bShouldWander) {
@@ -153,6 +178,10 @@ public class Wanderer : MonoBehaviour {
 
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, transform.position + (Vector3)(currentDirection * predictionDistance));
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(matchAreaOffset, new Vector3(matchAreaSize.x, matchAreaSize.y, 0));
+        Gizmos.DrawWireCube(timerAreaOffset, new Vector3(timerAreaSize.x, timerAreaSize.y, 0));
     }
 }
 

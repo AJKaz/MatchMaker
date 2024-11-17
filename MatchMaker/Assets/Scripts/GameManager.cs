@@ -85,8 +85,8 @@ public class GameManager : MonoBehaviour
     private void Update() {
         if (bMatchesFound) {
             if (match1.bAtTarget && match2.bAtTarget) {
-                // Dom TODO: Both r now in center, play anim
-                Debug.Log("BOTH AT CENTER");
+                match1.GetComponent<Animator>().SetBool("Match", true);
+                match2.GetComponent<Animator>().SetBool("Match", true);
             }
 
             return;
@@ -192,7 +192,7 @@ public class GameManager : MonoBehaviour
         foreach (Wanderer wanderer in selectedWanderers) {
             if (wanderer == match1 || wanderer == match2) continue;
 
-            // Dom TODO: Change ? to "X" animation for wrong selected wanderer
+            wanderer.GetComponent<Animator>().SetTrigger("Rejected");
 
         }
 
